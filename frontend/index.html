@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Flashcard App</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Flashcards</h1>
+    </header>
+    
+    <div class="card-form">
+      <div class="form-group">
+        <label for="card-front">Front:</label>
+        <textarea id="card-front" class="card-input" placeholder="Selected text will appear here"></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label for="card-back">Back:</label>
+        <textarea id="card-back" class="card-input" placeholder="Enter answer or definition"></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label for="card-hint">Hint (optional):</label>
+        <input type="text" id="card-hint" class="card-input" placeholder="Enter a hint" />
+      </div>
+      
+      <div class="form-group">
+        <label for="card-tags">Tags (comma-separated):</label>
+        <input type="text" id="card-tags" class="card-input" placeholder="e.g., math, german" />
+      </div>
+      
+      <div class="button-group">
+        <button id="save-card" class="primary-button">Save Card</button>
+        <button id="cancel" class="secondary-button">Cancel</button>
+      </div>
+    </div>
+    
+    <button id="start-practice" class="practice-button">Start Practice</button>
+  </main>
+  
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
