@@ -91,9 +91,3 @@ exports.down = (pgm) => {
 
 
 
- // es unda gadavacunculo mere ps1 shi
-// function calculateScoreOnEachFlashcard(difficulty){
-  //  if (difficulty === 'easy') return 1;
- //   if (difficulty === 'hard') return 2;
- //   if (difficulty === 'wrong') return 0;
-// }
