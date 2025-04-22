@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Flashcard</title>
+  <style>
+    /* You can add your custom styles here */
+  </style>
+</head>
+<body>
+  <h1>Create Flashcard</h1>
+  <form id="flashcard-form">
+    <label for="card-front">Front</label>
+    <input type="text" id="card-front" required />
+
+    <label for="card-back">Back</label>
+    <textarea id="card-back" required></textarea>
+
+    <label for="card-hint">Hint</label>
+    <input type="text" id="card-hint" />
+
+    <label for="card-tags">Tags (comma-separated)</label>
+    <input type="text" id="card-tags" />
+
+    <button type="submit">Save Card</button>
+  </form>
+
+  <script>
+    // Get the URL parameters (front text)
+    const params = new URLSearchParams(window.location.search);
+    const frontText = params.get("front");
+
+    // Populate the 'Front' field with the selected text
+    document.getElementById("card-front").value = frontText;
+
+    document.getElementById("flashcard-form").addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      const front = document.getElementById("card-front").value;
+      const back = document.getElementById("card-back").value;
+      const hint = document.getElementById("card-hint").value;
+      const tags = document.getElementById("card-tags").value;
+
+      // Simulate saving the card (You can connect to your database here)
+      alert(`Card saved with Front: ${front}, Back: ${back}`);
+
+      // Optionally, close the popup or redirect
+      window.close();  // Close the tab after saving
+    });
+  </script>
+</body>
+</html>
