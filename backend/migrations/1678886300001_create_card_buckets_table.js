@@ -29,5 +29,5 @@ exports.up = (pgm) => {
  * @param {import('node-pg-migrate/dist/types').MigrationBuilder} pgm
  */
  exports.down = (pgm) => {
-    pgm.dropTable('card_buckets'); // Drop index automatically
+    pgm.dropTable('card_buckets'); 
   };
