@@ -1,6 +1,7 @@
 // backend/src/server.ts
 import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
+import apiRouter from './routes/api'; 
 
 // Load environment variables from .env file
 dotenv.config();
@@ -14,10 +15,12 @@ app.use(express.json());
 
 // Define a simple root route (health check)
 app.get('/', (req: Request, res: Response) => {
-  res.send('Backend API is healthy!');
+  res.json({ status: "OK" }); // Changed to send JSON as per todo
 });
 
-// Start the server
+// --- MOUNT the API router ---
+app.use('/api', apiRouter); // <--- ADD THIS LINE
+
 app.listen(port, () => {
   console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
 });
