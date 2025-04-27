@@ -1,35 +1,58 @@
+let flashcardButton = null;
 
-let flashcardBtn;
+function removeButton() {
+    if (flashcardButton && flashcardButton.parentNode) {
+        flashcardButton.parentNode.removeChild(flashcardButton);
+        flashcardButton = null;
+    }
+}
 
-document.addEventListener("mouseup", () => {
-  const selection = window.getSelection();
-  const text = selection.toString().trim();
+document.addEventListener('mouseup', (event) => {
+    setTimeout(() => {
+        const selectedText = window.getSelection().toString().trim();
 
-  // Remove old button if it exists
-  if (flashcardBtn) flashcardBtn.remove();
+        removeButton();
 
-  if (text.length > 0) {
-    const range = selection.getRangeAt(0);
-    const rect = range.getBoundingClientRect();
+        if (selectedText.length > 0) {
+            flashcardButton = document.createElement('button');
+            flashcardButton.id = 'add-to-flashcards-btn';
+            flashcardButton.textContent = 'Add to Flashcards';
 
-    flashcardBtn = document.createElement("button");
-    flashcardBtn.textContent = "Add to Flashcards";
-    flashcardBtn.id = "flashcard-btn";
+            const range = window.getSelection().getRangeAt(0);
+            const rect = range.getBoundingClientRect();
 
-    // Position button above selection
-    flashcardBtn.style.top = `${window.scrollY + rect.top - 30}px`;
-    flashcardBtn.style.left = `${window.scrollX + rect.left}px`;
+            flashcardButton.style.position = 'absolute';
+            flashcardButton.style.left = `${rect.right + window.scrollX + 5}px`;
+            flashcardButton.style.top = `${rect.bottom + window.scrollY + 5}px`;
+            flashcardButton.style.zIndex = '9999';
 
-    document.body.appendChild(flashcardBtn);
+            flashcardButton.onclick = () => {
+                const textToSend = window.getSelection().toString().trim();
+                if (textToSend) {
+                    chrome.runtime.sendMessage({
+                            action: "openFlashcardPage",
+                            text: textToSend
+                        },
+                        (response) => {
+                            if (chrome.runtime.lastError) {
+                                console.error("Error sending message:", chrome.runtime.lastError.message);
+                            } else {
+                                // Optionally log response for debugging
+                                // console.log("Background script responded:", response);
+                            }
+                        }
+                    );
+                }
+                removeButton();
+            };
 
-    flashcardBtn.addEventListener("click", () => {
-      // Open a new tab or navigate to the flashcard creation page
-      chrome.tabs.create({ url: `popup.html?front=${encodeURIComponent(text)}` });
+            document.body.appendChild(flashcardButton);
+        }
+    }, 0);
+});
 
-      // Optionally, you can also open a modal in the current tab instead of a new tab:
-      // Show the popup form (You would implement a modal in the same page)
-
-      flashcardBtn.remove();
-    });
-  }
+document.addEventListener('mousedown', (event) => {
+    if (flashcardButton && event.target !== flashcardButton) {
+        setTimeout(removeButton, 100);
+    }
 });

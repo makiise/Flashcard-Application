@@ -1,19 +1,33 @@
 {
-    "manifest_version": 3,
-    "name": "Flashcard Extension",
-    "version": "1.0",
-    "description": "Create flashcards from selected text.",
-    "permissions": ["storage", "activeTab", "scripting"],
-    "host_permissions": ["<all_urls>"],
-    "action": {
-      "default_popup": "popup.html"
-    },
-    "content_scripts": [
-      {
-        "matches": ["<all_urls>"],
-        "js": ["content.js"],
-        "run_at": "document_idle"
-      }
-    ]
-  }
-  
+  "manifest_version": 3,
+  "name": "Google Selection to Flashcards",
+  "version": "1.0",
+  "description": "Select text on Google search results and add it to a flashcard.",
+  "permissions": [
+    "storage",
+    "scripting",
+    "tabs"
+  ],
+  "host_permissions": [
+    "https://*.google.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://*.google.com/*"],
+      "js": ["content.js"],
+      "css": ["style.css"]
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "Google Selection to Flashcards"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["popup.html"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}

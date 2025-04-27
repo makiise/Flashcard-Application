@@ -1,31 +1,37 @@
-document.getElementById('create-card-btn').addEventListener('click', () => {
-    // Triggered when user wants to create a flashcard
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      chrome.scripting.executeScript({
-        target: { tabId: tabs[0].id },
-        func: createFlashcard
-      });
-    });
+document.addEventListener('DOMContentLoaded', () => {
+  const frontTextArea = document.getElementById('front');
+  const backTextArea = document.getElementById('back');
+  const saveButton = document.getElementById('save-btn');
+
+  chrome.storage.local.get(['flashcardFrontText'], (result) => {
+      if (chrome.runtime.lastError) {
+          console.error("Error retrieving text:", chrome.runtime.lastError.message);
+          return;
+      }
+
+      if (result.flashcardFrontText) {
+          frontTextArea.value = result.flashcardFrontText;
+
+          chrome.storage.local.remove('flashcardFrontText', () => {
+         if (chrome.runtime.lastError) {
+                  console.error("Error removing text from storage:", chrome.runtime.lastError.message);
+               }
+          });
+      }
   });
-  
-  document.getElementById('view-cards-btn').addEventListener('click', () => {
-    // This will be used to navigate to a page to view the saved flashcards (yet to be created)
-    alert('Viewing Flashcards is a work in progress!');
+
+  saveButton.addEventListener('click', () => {
+      const frontText = frontTextArea.value.trim();
+      const backText = backTextArea.value.trim();
+
+      if (frontText && backText) {
+          console.log("Saving Flashcard:");
+          console.log("Front:", frontText);
+          console.log("Back:", backText);
+          alert("Flashcard saved (Placeholder - check console)!");
+          // window.close();
+      } else {
+          alert("Please fill in both the Front and Back fields.");
+      }
   });
-  
-  function createFlashcard() {
-    let selectedText = window.getSelection().toString().trim();
-    if (selectedText.length > 0) {
-      alert(`Selected Text: ${selectedText}`);
-  
-      // Now, you will prompt the user to add a back side and difficulty via hand gestures, etc.
-  
-      // You can save the card data using `chrome.storage.local` (for local storage) or send to a server here
-      chrome.storage.local.set({ flashcardFront: selectedText }, () => {
-        alert('Flashcard front saved!');
-      });
-    } else {
-      alert('No text selected!');
-    }
-  }
-  
+});
