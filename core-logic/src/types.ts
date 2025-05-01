@@ -60,6 +60,7 @@
      difficulty: AnswerDifficulty;
      previousBucket?: number;
      newBucket: number;
+     answers: Map<Flashcard, AnswerDifficulty>;
    };
    
    
@@ -67,10 +68,15 @@
    
    
    export type ComputeProgressResult = { 
-     totalCards: number;
-     cardsByBucket: Record<number, number>;
-     totalPractices: number;
-     difficultyCounts: Record<AnswerDifficulty, number>;
-     message?: string;
-   };
+    totalCards: number;
+    cardsByBucket: Record<number, number>;
+    totalPractices: number;
+    difficultyCounts: Record<AnswerDifficulty, number>;
+    message?: string;
+  
+    // Add these if needed
+    successCount?: number;
+    completeCount?: number;
+    maxBucket?: number;
+  };
   

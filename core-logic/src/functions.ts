@@ -266,6 +266,7 @@ export function computeProgress(
       cardsByBucket[bucketNum] = count;
       totalCards += count;
     }
+    
   
     // Initialize difficulty counts
     const difficultyCounts: Record<AnswerDifficulty, number> = {
@@ -289,10 +290,10 @@ export function computeProgress(
     // const easyRatio = totalPractices > 0 ? difficultyCounts[AnswerDifficulty.EASY] / totalPractices : 0;
   
     return {
-      totalCards,
-      cardsByBucket,
-      totalPractices,
-      difficultyCounts,
-      // message: totalPractices > 0 ? "Progress calculated." : "No practice history found."
-    };
+        totalCards,
+        cardsByBucket,
+        totalPractices, 
+        difficultyCounts,
+        
+      };
   }
