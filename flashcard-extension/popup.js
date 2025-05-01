@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // 2. Define your backend API endpoint URL
-        const apiUrl = 'http://localhost:3001/api/flashcards'; // <-- *** REPLACE WITH YOUR ACTUAL BACKEND URL ***
+        const apiUrl = 'http://localhost:3001'; // <-- *** REPLACE WITH YOUR ACTUAL BACKEND URL ***
 
         try {
             // 3. Make the POST request using the Fetch API
