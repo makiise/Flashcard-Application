@@ -124,6 +124,9 @@ function onResults(results) {
                     console.log(`Difficulty set to ${feedbackValue}!`);
                     gestureDisplay.textContent = `Detected Gesture: ${gestureState.stableGesture}`;
 
+                    // Send difficulty to backend API
+                    sendDifficultyToBackend(feedbackValue);
+
                     if (camera) {
                         console.log("Pausing video feed...");
                         videoElement.pause();
@@ -161,6 +164,45 @@ function onResults(results) {
     }
 
     canvasCtx.restore();
+}
+
+/**
+ * Sends the detected difficulty value to the backend API
+ * @param {string} difficulty - The difficulty level detected ("Easy", "Hard", or "Wrong")
+ */
+function sendDifficultyToBackend(difficulty) {
+    console.log(`Sending difficulty "${difficulty}" to backend...`);
+    
+    // Create the request data
+    const requestData = {
+        difficulty: difficulty
+    };
+    
+    // Send the POST request to the API
+    fetch('http://localhost:3001/api/cards', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestData)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Success sending difficulty to backend:', data);
+    })
+    .catch(error => {
+        console.error('Error sending difficulty to backend:', error);
+        
+        // Optional: Display error to user
+        if (gestureDisplay) {
+            gestureDisplay.textContent = `Detected ${gestureState.stableGesture} (API Error: ${error.message})`;
+        }
+    });
 }
 
 // --- Webcam Setup ---
