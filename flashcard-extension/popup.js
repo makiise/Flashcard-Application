@@ -60,8 +60,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Prepare the data payload for the backend
         const flashcardData = {
-            frontText: frontText,
-            backText: backText,
+            front: frontText,
+            back: backText,
             hint: hintText || null, // Send null if hint is empty (adjust based on backend needs)
             // Process tags: split by comma, trim whitespace, remove empty tags
             tags: tagsRaw ? tagsRaw.split(',').map(tag => tag.trim()).filter(tag => tag !== '') : []

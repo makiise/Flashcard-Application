@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+      
       "composite": true,
       "declarationMap": true,
       "target": "ES2016", // Or a newer version like ES2020, ESNext

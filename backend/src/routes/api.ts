@@ -10,54 +10,87 @@ import { AnswerDifficulty } from '../../../core-logic/src/types';
 const router: Router = express.Router();
 
 // --- POST /api/cards Route Handler (Step 6 + TODO for Step 7) ---
+// --- POST /api/cards Route Handler (UPDATED with Step 7 Logic) ---
 router.post('/cards', async (req: Request, res: Response, next: NextFunction) => {
-  // 1. Destructure body
+  // 1. Destructure body (Stays the same)
   const { front, back, hint, tags } = req.body || {};
 
-  // 2. Validation
+  // 2. Validation (Stays the same)
   if (!front || !back) {
     return res.status(400).json({ error: 'Missing required fields: front and back' });
   }
 
-  // 3. Prepare SQL Query and Values for flashcards table
-  const insertFlashcardQuery = `
-    INSERT INTO flashcards (front, back, hint, tags)
-    VALUES ($1, $2, $3, $4)
-    RETURNING *;
-  `;
-  const flashcardValues = [
-    front,
-    back,
-    hint !== undefined ? hint : null,
-    tags !== undefined ? tags : null,
-  ];
-
-  // --- Database Interaction ---
-  // TODO LATER (Step 7): Wrap this in a transaction (client.query('BEGIN'/'COMMIT'/'ROLLBACK'))
-  // TODO LATER (Step 7): Get a client ('const client = await pool.connect()') and use 'client.query()'
-  // TODO LATER (Step 7): Add 'client.release()' in a 'finally' block
-  // TODO LATER (Step 7): Add INSERT statement for 'card_buckets' table after flashcard insert
+  // --- Database Interaction with Transaction ---
+  let client; // <<< ADD: Declare client variable here
 
   try {
-    // For now, using pool directly (will change in Step 7)
-    const flashcardResult = await pool.query(insertFlashcardQuery, flashcardValues);
+    // <<< ADD: Get a client connection from the pool >>>
+    client = await pool.connect();
 
+    // <<< ADD: Start the transaction >>>
+    await client.query('BEGIN');
+
+    // 3. Prepare SQL Query and Values for flashcards table (Query stays the same)
+    const insertFlashcardQuery = `
+      INSERT INTO flashcards (front, back, hint, tags)
+      VALUES ($1, $2, $3, $4)
+      RETURNING *;
+    `;
+    const flashcardValues = [
+      front,
+      back,
+      hint !== undefined ? hint : null,
+      tags !== undefined ? tags : null,
+    ];
+
+    // <<< CHANGE: Execute flashcard insert USING THE CLIENT >>>
+    const flashcardResult = await client.query(insertFlashcardQuery, flashcardValues);
+
+    // Error check (Stays the same)
     if (flashcardResult.rows.length === 0) {
-      throw new Error('Flashcard insertion failed or did not return data.');
+      // We are inside a transaction, so throw error to trigger rollback
+      throw new Error('Flashcard insertion failed unexpectedly.');
     }
-
     const newFlashcard = flashcardResult.rows[0];
 
-    // 4. Send Success Response
+    // <<< ADD: Prepare and execute INSERT into card_buckets >>>
+    const insertBucketQuery = `
+      INSERT INTO card_buckets (card_id, bucket_number, last_practiced_at, updated_at)
+      VALUES ($1, $2, $3, NOW())
+    `;
+    // Use the id from the flashcard we just inserted
+    // Bucket is 0, last_practiced_at is NULL
+    const bucketValues = [newFlashcard.id, 0, null];
+    await client.query(insertBucketQuery, bucketValues);
+    // <<< END of card_buckets insert >>>
+
+    // <<< ADD: Commit the transaction >>>
+    await client.query('COMMIT');
+
+    // 4. Send Success Response (Stays the same, using newFlashcard)
     res.status(201).json(newFlashcard);
 
   } catch (err) {
     // 5. Handle Errors
+    // <<< ADD: Rollback if client exists >>>
+    if (client) {
+      try {
+        await client.query('ROLLBACK');
+      } catch (rollbackErr) {
+        console.error('Error rolling back transaction:', rollbackErr);
+      }
+    }
+    // Log original error and pass to error handler (Stays the same)
     console.error('Database error in POST /api/cards:', err);
-    next(err); // Pass to error handler
-  }
-});
+    next(err);
 
+  } finally {
+    // <<< ADD: Release the client in a finally block >>>
+    if (client) {
+      client.release(); // Return client to the pool
+    }
+  }
+}); // <<< End of router.post('/cards', ...) function
 
 // --- GET /api/practice Route Handler (Step 9) ---
 router.get('/practice', async (req: Request, res: Response, next: NextFunction) => {
