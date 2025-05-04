@@ -1,76 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gesture App Home</title>
-    <style>
-        body {
-            font-family: sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f2f2f2;
-        }
-        h1 {
-            margin-bottom: 20px;
-        }
-        .redirect {
-            padding: 12px 24px;
-            font-size: 1.2em;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-        .redirect:hover {
-            background-color: #0056b3;
-        }
-        .hint{
-            background-color: black;
-            padding: 12px 18px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            color: white;
-        }
-        .card {
-    width: 500px;
-    height: 200px;
-    background-color: #ccc; /* Light gray fill */
-    border: 2px dashed #999; /* Optional: dashed border for "empty" look */
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 15px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-}
-
-    .daybut{
-        background-color: #007bff;
-        border-radius: 8px;
-        border-color: #007bff;
-        padding: 10px;
-        margin-bottom: 15px;
-        color: white;
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+  <title>Gesture App Home</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f2f2f2;
     }
-    </style>
+    h1 {
+      margin-bottom: 20px;
+      color: #007bff;
+    }
+    .daybut {
+      background-color: #007bff;
+      border-radius: 8px;
+      border: none;
+      padding: 10px;
+      margin-bottom: 15px;
+      color: white;
+      cursor: pointer;
+    }
+    .card {
+      width: 500px;
+      height: 200px;
+      background-color: #ccc;
+      border: 2px dashed #999;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 15px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      position: relative;
+    }
+    .card-front {
+      font-size: 1.4em;
+      color: #333;
+    }
+    .hint {
+      background-color: black;
+      padding: 12px 18px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      color: white;
+      cursor: pointer;
+    }
+    .redirect {
+      padding: 12px 24px;
+      font-size: 1.2em;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .redirect:hover {
+      background-color: #0056b3;
+    }
+    .hint-text {
+      position: absolute;
+      bottom: -40px;
+      background: rgba(0, 0, 0, 0.8);
+      color: #fff;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 0.9em;
+      display: none;
+    }
+  </style>
 </head>
 <body>
-
-    <h1 style="color: #007bff;">Welcome to Gesture Difficulty App</h1>
-    <button class="daybut"> day 1 </button>
-    <p style="color: gray; font-style: italic;">Take a hand gesture(?)</p>
-    <div class="card">
-        <span style="color: #666;">Image Placeholder</span>
-    </div>
-    
-    <button class="hint">Get Hint</button>
-    <button onclick="location.href='gesture.html'" class="redirect">Start Gesture Detection</button>
-
+  <h1>Welcome to Gesture Difficulty App</h1>
+  <button id="next-btn" class="daybut">Next Flashcard</button>
+  <p style="color: gray; font-style: italic;">Take a hand gesture(?)</p>
+  <div class="card">
+    <div class="card-front">Loading…</div>
+    <div class="hint-text"></div>
+  </div>
+  <button id="hint-btn" class="hint">Get Hint</button>
+  <button onclick="location.href='gesture.html'" class="redirect">
+    Start Gesture Detection
+  </button>
+  <script>
+    const apiUrl = 'http://localhost:3001/api/cards';
+    let currentCard = null;
+    async function fetchNextCard() {
+      const res = await fetch(apiUrl);
+      if (!res.ok) return;
+      const cards = await res.json();
+      currentCard = cards[0] || null;
+      renderCard();
+    }
+    function renderCard() {
+      const frontEl = document.querySelector('.card-front');
+      const hintTextEl = document.querySelector('.hint-text');
+      hintTextEl.style.display = 'none';
+      hintTextEl.textContent = '';
+      if (!currentCard) {
+        frontEl.textContent = 'No cards available';
+        return;
+      }
+      frontEl.textContent = currentCard.front;
+    }
+    document.getElementById('hint-btn').addEventListener('click', () => {
+      if (!currentCard || !currentCard.hint) return;
+      const hintTextEl = document.querySelector('.hint-text');
+      hintTextEl.textContent = currentCard.hint;
+      hintTextEl.style.display = 'block';
+    });
+    document.getElementById('next-btn').addEventListener('click', fetchNextCard);
+    window.addEventListener('DOMContentLoaded', fetchNextCard);
+  </script>
 </body>
 </html>
