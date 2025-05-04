@@ -1,3 +1,5 @@
+
+
 // backend/src/server.ts
 import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
@@ -19,8 +21,10 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 // --- MOUNT the API router ---
-app.use('/api', apiRouter); // <--- ADD THIS LINE
+app.use('/api', apiRouter); 
 
 app.listen(port, () => {
   console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
 });
+
+export default app;

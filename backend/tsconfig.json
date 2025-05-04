@@ -1,5 +1,7 @@
 {
     "compilerOptions": {
+      "composite": true,
+      "declarationMap": true,
       "target": "ES2016", // Or a newer version like ES2020, ESNext
       "module": "CommonJS", // Standard for Node.js unless you configure for ES Modules
       "outDir": "./dist", // Where compiled JavaScript will go
@@ -10,6 +12,10 @@
       "forceConsistentCasingInFileNames": true, // Disallow inconsistently-cased references to the same file.
       "resolveJsonModule": true // Allows importing .json files
     },
-    "include": ["src/**/*"], // Which files to include in compilation
-    "exclude": ["node_modules", "**/*.test.ts"] // Which files/folders to exclude
-  }
+
+    "references": [
+    { "path": "../core-logic" } // Path from backend/ to core-logic/
+  ],
+  "include": ["src/**/*"], // Keep existing include/exclude
+  "exclude": ["node_modules", "dist", "**/*.test.ts"]
+}

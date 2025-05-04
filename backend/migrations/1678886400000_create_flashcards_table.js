@@ -86,8 +86,3 @@ exports.down = (pgm) => {
 
     pgm.dropExtension('uuid-ossp');
 };
-
-
-
-
-1

@@ -1,3 +1,6 @@
+
+
+
 // This file should NOT be modified.
 // It is a placeholder to ensure the project structure is complete.
 // You will work with the Flashcard, AnswerDifficulty, and BucketMap types
@@ -57,6 +60,7 @@
      difficulty: AnswerDifficulty;
      previousBucket?: number;
      newBucket: number;
+     answers: Map<Flashcard, AnswerDifficulty>;
    };
    
    
@@ -64,10 +68,15 @@
    
    
    export type ComputeProgressResult = { 
-     totalCards: number;
-     cardsByBucket: Record<number, number>;
-     totalPractices: number;
-     difficultyCounts: Record<AnswerDifficulty, number>;
-     message?: string;
-   };
+    totalCards: number;
+    cardsByBucket: Record<number, number>;
+    totalPractices: number;
+    difficultyCounts: Record<AnswerDifficulty, number>;
+    message?: string;
+  
+    // Add these if needed
+    successCount?: number;
+    completeCount?: number;
+    maxBucket?: number;
+  };
   

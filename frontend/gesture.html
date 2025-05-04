@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gesture Difficulty</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+            line-height: 1.5; /* Improve readability */
+        }
+        .container {
+            position: relative;
+            width: 480px;
+            height: 360px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            background-color: #f0f0f0; /* Background for empty video */
+        }
+        #webcamVideo {
+            display: block;
+            width: 100%;
+            height: 100%;
+            transform: scaleX(-1); /* Mirror view */
+            object-fit: cover;
+        }
+        #outputCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .difficulty-area {
+             margin-bottom: 15px;
+             text-align: center;
+        }
+         .difficulty-area label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-size: 1.2em;
+         }
+         .difficulty-area input {
+            padding: 8px;
+            font-size: 1.1em;
+            min-width: 150px;
+            text-align: center;
+            border: 1px solid #ccc;
+            background-color: #eee; /* Indicate readonly */
+         }
+        #detectedGesture {
+            font-size: 1em;
+            color: #555;
+            min-height: 1.2em;
+            text-align: center;
+            margin-top: 5px;
+        }
+        .instructions {
+            padding: 5px 15px;
+            margin-top: 15px;
+            background-color: #fafafa;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* center items horizontally */
+            text-align: center;
+           }
+        .instructions ul {
+            list-style: none; /* Remove default bullets */
+            padding-left: 0;
+        }
+         .instructions li {
+             margin-bottom: 5px;
+         }
+         .instructions strong {
+            display: inline-block;
+            min-width: 110px; /* Align text */
+         }
+         .daybut{
+        background-color: #007bff;
+        border-radius: 8px;
+        border-color: #007bff;
+        padding: 10px;
+        margin-bottom: 15px;
+        color: white;
+    }
+    .diffs {
+    display: flex;
+    justify-content: space-between;
+    gap: 25px; /* Optional: adds spacing between items */
+    width: 100%; /* or a fixed width like 300px if needed */
+    max-width: 250px; /* optional limit */
+    }
+    .diff-btn {
+    width: 100px; /* fixed width */
+    text-align: center;
+    padding: 10px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+    </style>
+</head>
+<body>
+
+    <h1 style="color: #007bff;">Gesture Input</h1>
+
+    <button class="daybut"> day 1 </button>
+    
+    <div class="difficulty-area">
+        <label for="difficultyInput">Answer Difficulty:</label>
+        <input type="text" id="difficultyInput" placeholder="Show gesture..." readonly>
+    </div>
+
+    <div id="detectedGesture">Detected Gesture: None</div>
+
+    <div class="container">
+        <video id="webcamVideo" autoplay playsinline></video>
+        <canvas id="outputCanvas"></canvas>
+    </div>
+
+    <!-- ****** UPDATED INSTRUCTIONS ****** -->
+    <div class="instructions">
+        <p>Show a gesture:</p>
+        <ul>
+            <li><strong>Thumbs Up 👍:</strong> 'Easy'</li>
+            <li><strong>Fist ✊:</strong> 'Hard'</li>
+            <li><strong>High Five/Open Palm ✋:</strong> 'Wrong'</li>
+        </ul>
+    </div>
+    <!-- ********************************* -->
+    <div class="diffs">
+        <p class="diff-btn" style="background-color: red;">Wrong</p>
+        <p class="diff-btn" style="background-color: yellow;">Hard</p>
+        <p class="diff-btn" style="background-color: greenyellow;">Right</p>
+    </div>
+    
+
+    <p style="margin-top: 15px;"><strong>Note:</strong> Grant camera permission if prompted.</p>
+
+    <!-- Load MediaPipe libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+
+    <!-- Load your custom script -->
+    <script src="gesture.js"></script>
+
+</body>
+</html>
